@@ -14,9 +14,10 @@ namespace CodingTaskSmartWork.Repository
     {
         public PhoneType getPhoneType(int id)
         {
+            
             try
             {
-                string jsonFilePhoneType = @"C:\Users\Administrator\source\repos\CodingTaskSmartWork\CodingTaskSmartWork\JsonFile\jsonFilePhoneType.json";
+                string jsonFilePhoneType = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "JsonFile", "jsonFilePhoneType.json");
                 JArray jo = new JArray();
                 var JsonStringPhoneType = File.ReadAllText(jsonFilePhoneType);
                 jo = JArray.Parse(JsonStringPhoneType);

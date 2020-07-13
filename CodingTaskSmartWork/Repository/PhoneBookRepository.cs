@@ -15,8 +15,8 @@ namespace CodingTaskSmartWork.Repository
     
     public class PhoneBookRepository<T> : IRepository<T> where T : class
     {
-        phoneTypeRepository _phoneTypeRepository = new phoneTypeRepository(); 
-        string jsonFile = @"C:\Users\Administrator\source\repos\CodingTaskSmartWork\CodingTaskSmartWork\JsonFile\jsonFile.json";
+        phoneTypeRepository _phoneTypeRepository = new phoneTypeRepository();  
+        string jsonFile = System.IO.Path.Combine(Directory.GetCurrentDirectory() , "JsonFile", "jsonFile.json");
         JArray jObject = new JArray();
         string jsonString = "";
         private static readonly Object lockObject = new Object();

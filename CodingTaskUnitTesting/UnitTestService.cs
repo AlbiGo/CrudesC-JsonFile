@@ -14,14 +14,16 @@ namespace CodingTaskUnitTesting
 {
     public class UnitTestService<T> : IRepository<T> where T : class
     {
-        string jsonFile = @"C:\Users\Administrator\source\repos\CodingTaskSmartWork\CodingTaskUnitTesting\JsonFileMockData\jsonFileMockData.json";
+         
+        string jsonFile = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "JsonFileMockData", "jsonFileMockData.json");
         JArray jObject = new JArray();
         string jsonString = "";
         public PhoneType  getPhoneType(int id)
         {
             try
             {
-                string jsonFilePhoneType = @"C:\Users\Administrator\source\repos\CodingTaskSmartWork\CodingTaskUnitTesting\JsonFileMockData\jsonFilePhoneTypeMockData.json";
+                
+                string jsonFilePhoneType = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "JsonFileMockData", "jsonFilePhoneTypeMockData.json");
                 JArray jo = new JArray();
                 var JsonStringPhoneType = File.ReadAllText(jsonFilePhoneType);
                 jo = JArray.Parse(JsonStringPhoneType);
