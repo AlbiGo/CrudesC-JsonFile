@@ -1,0 +1,15 @@
+[
+  {
+   "PhoneTypeID" : 1,
+   "Type" : "Work"
+  },
+  {
+     "PhoneTypeID" : 2,
+   "Type" : "Cellphone"
+  },
+  
+  {
+    "PhoneTypeID" : 3,
+   "Type" : "Home"
+  }
+]
