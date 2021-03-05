@@ -9,7 +9,7 @@ namespace CodingTaskSmartWork.Model
     public class PhoneType
     {
         [Key]
-        public int PhoneTypeID { get; set; }
+        public Guid id { get; set; }
         public string Type { get; set; }
         //public virtual ICollection<PhoneBook> PhoneBook { get; set; }
 

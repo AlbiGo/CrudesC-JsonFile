@@ -18,27 +18,27 @@ namespace CodingTaskUnitTesting
         string jsonFile = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "JsonFileMockData", "jsonFileMockData.json");
         JArray jObject = new JArray();
         string jsonString = "";
-        public PhoneType  getPhoneType(int id)
-        {
-            try
-            {
+        //public PhoneType  getPhoneType(int id)
+        //{
+        //    try
+        //    {
                 
-                string jsonFilePhoneType = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "JsonFileMockData", "jsonFilePhoneTypeMockData.json");
-                JArray jo = new JArray();
-                var JsonStringPhoneType = File.ReadAllText(jsonFilePhoneType);
-                jo = JArray.Parse(JsonStringPhoneType);
+        //        string jsonFilePhoneType = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "JsonFileMockData", "jsonFilePhoneTypeMockData.json");
+        //        JArray jo = new JArray();
+        //        var JsonStringPhoneType = File.ReadAllText(jsonFilePhoneType);
+        //        jo = JArray.Parse(JsonStringPhoneType);
 
-                var PhoneBook = jo.FirstOrDefault(obj => (int)obj["PhoneTypeID"] == id);
-                PhoneType _PhoneBook = Newtonsoft.Json.JsonConvert.DeserializeObject<PhoneType>(PhoneBook.ToString());
+        //        var PhoneBook = jo.FirstOrDefault(obj => (int)obj["PhoneTypeID"] == id);
+        //        PhoneType _PhoneBook = Newtonsoft.Json.JsonConvert.DeserializeObject<PhoneType>(PhoneBook.ToString());
 
-                return _PhoneBook;
+        //        return _PhoneBook;
 
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
+        //    }
+        //    catch (Exception)
+        //    {
+        //        throw;
+        //    }
+        //}
         public UnitTestService()
         {
             if (File.Exists(jsonFile))
@@ -53,21 +53,11 @@ namespace CodingTaskUnitTesting
 
 
         }
-        public List<T> getAllRecords()
+        public List<T> getAllRecords( string s)
         {
             try
             {
                 var PhoneNumberlist = JsonConvert.DeserializeObject<List<PhoneBook>>(jsonString);
-                foreach (var element in PhoneNumberlist)
-                {
-                    var phoneType = this.getPhoneType((int)element.TypeID);
-                    PhoneType pht = new PhoneType()
-                    {
-                        PhoneTypeID = phoneType.PhoneTypeID,
-                        Type = phoneType.Type
-                    };
-                    element.PhoneType = pht;
-                }
 
                 return PhoneNumberlist as List<T>;
             }
@@ -77,20 +67,20 @@ namespace CodingTaskUnitTesting
             }
         }
 
-        public async Task Add(T entity)
+        public async Task Add(T entity , string s)
         {
                 try
                 {
                     var ph = entity as PhoneBook;
                     Guid PhoneBookID = Guid.NewGuid();//PhoneBookCreation
                     ph.id = PhoneBookID;
-                    var phoneType = this.getPhoneType((int)ph.TypeID);
-                    PhoneType pht = new PhoneType()
-                    {
-                        PhoneTypeID = phoneType.PhoneTypeID,
-                        Type = phoneType.Type
-                    };
-                    ph.PhoneType = pht;
+                   // var phoneType = this.getPhoneType((int)ph.TypeID);
+                    //PhoneType pht = new PhoneType()
+                    //{
+                    //    PhoneTypeID = phoneType.PhoneTypeID,
+                    //    Type = phoneType.Type
+                    //};
+                    //ph.PhoneType = pht;
                     string json = JsonConvert.SerializeObject(ph, Formatting.Indented);
                     var Object = JObject.Parse(json);
                     jObject.Add(Object);
@@ -103,7 +93,7 @@ namespace CodingTaskUnitTesting
                     throw;
                 }
         }
-        public async Task<T> Update(T entity)
+        public async Task<T> Update(T entity , string s)
         {
             try
             {
@@ -134,25 +124,15 @@ namespace CodingTaskUnitTesting
             }
 
         }
-        public async Task<T> Delete(T entity)
+        public async Task Delete(T entity , string s)
         {
             try
             {
                 var ph = entity as PhoneBook;
-                var foundRecordToBeDeleted = this.FindById(ph.id.ToString());
-                if (foundRecordToBeDeleted == null)
-                {
-                    return null;
-                }
-                else
-                {
-                    string json = JsonConvert.SerializeObject(foundRecordToBeDeleted, Formatting.Indented);
-                    var Object = JObject.Parse(json);
-                    jObject.Remove(Object);
-                    return foundRecordToBeDeleted as T;
-                }
-
-
+                var foundRecordToBeDeleted = this.FindById(ph.id.ToString(), s);
+                string json = JsonConvert.SerializeObject(foundRecordToBeDeleted, Formatting.Indented);
+                var Object = JObject.Parse(json);
+                jObject.Remove(Object);
             }
             catch (Exception)
             {
@@ -160,7 +140,7 @@ namespace CodingTaskUnitTesting
             }
         }
 
-        public T FindById(string id)
+        public T FindById(string id, string s)
         {
             try
             {
@@ -176,11 +156,11 @@ namespace CodingTaskUnitTesting
                     else
                     {
                         _PhoneBook = Newtonsoft.Json.JsonConvert.DeserializeObject<PhoneBook>(PhoneBook.ToString());
-                        var phoneType = this.getPhoneType((int)_PhoneBook.TypeID);
-                        if (phoneType != null)
-                        {
-                            _PhoneBook.PhoneType = phoneType;
-                        }
+                      //  var phoneType = this.getPhoneType(_PhoneBook.TypeID.ToString());
+                        //if (phoneType != null)
+                        //{
+                        //    _PhoneBook.PhoneType = phoneType;
+                        //}
                        
                         return _PhoneBook as T;
                     }

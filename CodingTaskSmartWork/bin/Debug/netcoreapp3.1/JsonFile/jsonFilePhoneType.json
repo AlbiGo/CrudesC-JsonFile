@@ -1,15 +1,15 @@
 [
   {
-   "PhoneTypeID" : 1,
-   "Type" : "Work"
+    "id": "c2efeb35-3885-461f-b3c9-9582b5c358c7",
+    "Type": "Work"
   },
   {
-     "PhoneTypeID" : 2,
-   "Type" : "Cellphone"
+    "id": "c2efeb35-3885-461f-b3c9-9582b5c358c8",
+    "Type": "Cellphone"
   },
-  
+
   {
-    "PhoneTypeID" : 3,
-   "Type" : "Home"
+    "id": "c2efeb35-3885-461f-b3c9-9582b5c358c9",
+    "Type": "Home"
   }
 ]

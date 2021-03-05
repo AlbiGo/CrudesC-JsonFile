@@ -17,7 +17,7 @@ namespace CodingTaskSmartWork.Model
         [Required]
         public string LastName { get; set; }
         [Required]
-        public Nullable<int> TypeID { get; set; }
+        public Nullable<Guid> TypeID { get; set; }
         [Phone]//Phone Number Validation needs to be implemented
         [Required]
         public string PhoneNumber { get; set; }

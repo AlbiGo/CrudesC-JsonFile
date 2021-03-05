@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 
@@ -15,133 +16,59 @@ namespace CodingTaskSmartWork.Repository
     
     public class PhoneBookRepository<T> : IRepository<T> where T : class
     {
-        phoneTypeRepository _phoneTypeRepository = new phoneTypeRepository();  
-        string jsonFile = System.IO.Path.Combine(Directory.GetCurrentDirectory() , "JsonFile", "jsonFile.json");
-        JArray jObject = new JArray();
-        string jsonString = "";
         private static readonly Object lockObject = new Object();
 
-
-        public PhoneBookRepository()
-        {
-            if(File.Exists(jsonFile))
-            {
-                jsonString = File.ReadAllText(jsonFile);
-                jObject = JArray.Parse(jsonString);
-            }
-            else
-            {
-                throw new Exception("File doesnt exist");
-            }
-
-
-        }
-        public async Task saveAsync(JArray _JArray, string jsonFilePath)
-        {
-
-            string newJsonResult = Newtonsoft.Json.JsonConvert.SerializeObject(_JArray, Newtonsoft.Json.Formatting.Indented);
-            await File.WriteAllTextAsync(jsonFilePath, newJsonResult);
-        }
-        public async Task Add(T entity)
+        public async Task Add(T entity ,string jsonFile)
         {
             try
             {   
-                var ph = entity as PhoneBook;
+                dynamic ph = entity;
                 Guid PhoneBookID = Guid.NewGuid();//PhoneBookCreation
                 ph.id = PhoneBookID;
+                string jsonString = File.ReadAllText(jsonFile);
+                var jObject = JArray.Parse(jsonString);
                 string json = JsonConvert.SerializeObject(ph, Formatting.Indented);
                 var Object = JObject.Parse(json);
                 jObject.Add(Object);
-                await this.saveAsync(jObject, jsonFile);
+                await Utilities.Utility.saveAsync(jObject, jsonFile);
             }
-           
-             
-            catch(Exception)
+            catch(Exception ex)
             {
-                throw ;
+                throw ex ;
             }
 
         }
-        public List<T> getAllRecords()
+        public List<T> getAllRecords(string jsonString)
         {
             try
             {
-                var PhoneNumberlist = JsonConvert.DeserializeObject<List<PhoneBook>>(jsonString);
-                foreach(var element in PhoneNumberlist)
-                {
-                    var phoneType = _phoneTypeRepository.getPhoneType((int)element.TypeID);
-                    PhoneType pht = new PhoneType()
-                    {
-                        PhoneTypeID = phoneType.PhoneTypeID,
-                        Type = phoneType.Type
-                    };
-                    element.PhoneType = pht;
-                }
-
-                return PhoneNumberlist as List<T>;
-            }
-            catch(Exception)
-            {
-                throw;
-            }
-          
-
-        }
-        public List<PhoneBook> OrderByName()
-        {
-            try
-            {
-                var PhoneNumberlist = (this.getAllRecords() as List<PhoneBook>).OrderBy(p => p.FirstName).ToList();
-
+                var PhoneNumberlist = JsonConvert.DeserializeObject<List<T>>(jsonString);
                 return PhoneNumberlist;
             }
-            catch (Exception)
+            catch(Exception ex)
             {
                 throw;
             }
-
-
         }
-        public List<PhoneBook> OrderByLastName()
+        public T FindById(string id , string jsonFile)
         {
             try
             {
-                var PhoneNumberlist = (this.getAllRecords() as List<PhoneBook>).OrderBy(p => p.LastName).ToList();
-
-                return PhoneNumberlist;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-
-
-        }
-
-        public T FindById(string id)
-        {
-            try
-            {
-                var CheckGuid = Guid.TryParse(id, out Guid phoneBookID);
+                var jsonString = File.ReadAllText(jsonFile);
+                var jObject = JArray.Parse(jsonString);
+                var CheckGuid = Guid.TryParse(id, out Guid entityId);
                 if (CheckGuid)
                 {
-                    var _PhoneBook = new PhoneBook();
-                    var PhoneBook = jObject.FirstOrDefault(obj => (Guid)obj["id"] == phoneBookID);
+                    //dynamic _PhoneBook ;
+                    var PhoneBook = jObject.FirstOrDefault(obj => (Guid)obj["id"] == entityId);
                     if(PhoneBook == null)
                     {
                         return null;
                     }
                     else
                     {
-                        _PhoneBook = Newtonsoft.Json.JsonConvert.DeserializeObject<PhoneBook>(PhoneBook.ToString());
-
-                        var phoneType = _phoneTypeRepository.getPhoneType((int)_PhoneBook.TypeID);
-                        if(phoneType != null)
-                        {
-                            _PhoneBook.PhoneType = phoneType;
-                        }
-
-                        return _PhoneBook as T;
+                       var _PhoneBook = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(PhoneBook.ToString());
+                       return _PhoneBook;
                     }
                    
                 }
@@ -150,38 +77,28 @@ namespace CodingTaskSmartWork.Repository
                     throw new Exception("Id is not valid");
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 throw;
             }
 
         }
 
- 
-
-        public async Task<T> Delete(T entity)
+        public async Task Delete(T entity , string jsonFile)
         {
             try
             {
-           
-                    var ph = entity as PhoneBook;
-                    var foundRecordToBeDeleted = this.FindById(ph.id.ToString());
-                    if(foundRecordToBeDeleted == null)
-                    {
-                        return null;
-                    }
-                    else
-                    {
-                        string json = JsonConvert.SerializeObject(foundRecordToBeDeleted, Formatting.Indented);
-                        var Object = JObject.Parse(json);
-                        jObject.Remove(Object);
-                        await this.saveAsync(jObject, jsonFile);
-                        return foundRecordToBeDeleted as T;
-                    }
-
-             
-               
-            }
+                dynamic record = entity;
+                string jsonString = File.ReadAllText(jsonFile);
+                JArray jObject = JArray.Parse(jsonString);
+                var recordToBeDeleted = jObject.Where(p => p["id"].ToString() == record.id.ToString()).FirstOrDefault();
+                if(recordToBeDeleted == null)
+                {
+                    throw new Exception("Not Found");
+                }
+                jObject.Remove(recordToBeDeleted);
+                await Utilities.Utility.saveAsync(jObject, jsonFile);
+                }
             catch (Exception)
             {
                 throw;
@@ -189,12 +106,13 @@ namespace CodingTaskSmartWork.Repository
            
         }
 
-        public async Task<T> Update(T entity)
+        public async Task<T> Update(T entity , string jsonFile)
         {
             try
             {
-              
                     var ph = entity as PhoneBook;
+                    string jsonString = File.ReadAllText(jsonFile);
+                    var jObject = JArray.Parse(jsonString);
                     var PhoneBookNeedToUpdate = jObject.FirstOrDefault(obj => (Guid)obj["id"] == ph.id );
                     if (PhoneBookNeedToUpdate == null)
                     {
@@ -202,14 +120,13 @@ namespace CodingTaskSmartWork.Repository
                     }
                     else
                     {
-             
                         PhoneBookNeedToUpdate["FirstName"] =ph.FirstName;
                         PhoneBookNeedToUpdate["LastName"] = ph.LastName;
                         PhoneBookNeedToUpdate["TypeID"] = ph.TypeID;
                         PhoneBookNeedToUpdate["PhoneNumber"] = ph.PhoneNumber;
-                        await this.saveAsync(jObject, jsonFile);
-                        var upDatedBook =  this.FindById(ph.id.ToString());
-                        return upDatedBook as T;
+                        await Utilities.Utility.saveAsync(jObject, jsonFile);
+                        var upDatedBook =  this.FindById(ph.id.ToString() , jsonFile);
+                        return PhoneBookNeedToUpdate as T;
                     }
                 
                
@@ -221,8 +138,6 @@ namespace CodingTaskSmartWork.Repository
         
           
         }
-
-
 
     }
 }

@@ -9,12 +9,12 @@ namespace CodingTaskSmartWork.Interface
 {
     public interface IRepository<T> where T : class
     {
-        Task Add(T entity);
-        Task<T> Update(T entity);
-        Task<T> Delete(T entity);
+        Task Add(T entity , string s);
+        Task<T> Update(T entity , string s);
+        Task Delete(T entity , string s);
 
-        T FindById(string id);
-        List<T> getAllRecords();
+        T FindById(string id , string jsonFile);
+        List<T> getAllRecords(string s);
 
 
     }

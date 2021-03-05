@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CodingTaskSmartWork.Interface;
+using CodingTaskSmartWork.IService;
 using CodingTaskSmartWork.Model;
 using CodingTaskSmartWork.Repository;
+using CodingTaskSmartWork.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -43,7 +45,11 @@ namespace CodingTaskSmartWork
                         .AllowAnyHeader());
                 // .AllowCredentials());
             });
+
+            //Service Injections
+            services.AddScoped(typeof(IPhoneBookService), typeof(PhoneBookService));
             services.AddScoped(typeof(IRepository<>), typeof(PhoneBookRepository<>));
+
 
         }
 

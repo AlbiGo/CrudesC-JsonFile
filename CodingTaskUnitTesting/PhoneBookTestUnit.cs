@@ -1,5 +1,6 @@
 using CodingTaskSmartWork.Controllers;
 using CodingTaskSmartWork.Interface;
+using CodingTaskSmartWork.IService;
 using CodingTaskSmartWork.Model;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -10,12 +11,13 @@ namespace CodingTaskUnitTesting
     public class PhoneBookTestUnit
     {
         private readonly IRepository<PhoneBook> _IRepository;
+        private readonly IPhoneBookService _phoneBookService;
         private readonly PhoneBooksController _PhoneBooksController;
         private UnitTestService<PhoneBook> _UnitTestService ;
         public PhoneBookTestUnit() //Test Controller Constructor
         {
             _IRepository = new UnitTestService<PhoneBook>();
-            _PhoneBooksController = new PhoneBooksController(_IRepository);
+            _PhoneBooksController = new PhoneBooksController(_phoneBookService);
             _UnitTestService = new UnitTestService<PhoneBook>();
         }
         #region Test Get Method
@@ -89,7 +91,7 @@ namespace CodingTaskUnitTesting
                 FirstName = "UnitTest",
                 LastName = "UnitTest",
                 PhoneNumber = "999999",
-                TypeID = 1
+                TypeID = new Guid("617e4975-1253-4ff8-8238-7acc67db6e3a")
             };
 
             // Act
@@ -110,7 +112,7 @@ namespace CodingTaskUnitTesting
                 FirstName = "UnitTest",
                 LastName = "UnitTest",
                 PhoneNumber = "999999",
-                TypeID = 1
+                TypeID = new Guid("617e4975-1253-4ff8-8238-7acc67db6e3a")
             };
 
             // Act
@@ -133,7 +135,7 @@ namespace CodingTaskUnitTesting
                 FirstName = "UnitTest",
                 LastName = "UnitTest",
                 PhoneNumber = "999999",
-                TypeID = 1
+                TypeID = new Guid("617e4975-1253-4ff8-8238-7acc67db6e3a")
             };
             var notFoundResult = _PhoneBooksController.Delete(newPhoneBook).Result as NotFoundResult;
             Assert.IsType<NotFoundResult>(notFoundResult);
@@ -150,7 +152,7 @@ namespace CodingTaskUnitTesting
                 FirstName = "Mock1",
                 LastName = "Mock1",
                 PhoneNumber = "266681684",
-                TypeID = 1
+                TypeID = new Guid("617e4975-1253-4ff8-8238-7acc67db6e3a")
             };
             var okResult = _PhoneBooksController.Delete(newPhoneBook).Result as OkObjectResult;
             Assert.IsType<OkObjectResult>(okResult);
@@ -164,7 +166,7 @@ namespace CodingTaskUnitTesting
                 FirstName = "Mock1",
                 LastName = "Mock1",
                 PhoneNumber = "266681684",
-                TypeID = 1
+                TypeID = new Guid("617e4975-1253-4ff8-8238-7acc67db6e3a")
             };
             var okResult = _PhoneBooksController.Delete(newPhoneBook).Result as OkObjectResult;
             var deletedRecord = okResult.Value as PhoneBook;
@@ -183,7 +185,7 @@ namespace CodingTaskUnitTesting
                 FirstName = "UnitTest",
                 LastName = "UnitTest",
                 PhoneNumber = "999999",
-                TypeID = 1
+                TypeID = new Guid("617e4975-1253-4ff8-8238-7acc67db6e3a")
             };
             var notFoundResult = _PhoneBooksController.Delete(newPhoneBook).Result as NotFoundResult;
             Assert.IsType<NotFoundResult>(notFoundResult);
@@ -198,7 +200,7 @@ namespace CodingTaskUnitTesting
                 FirstName = "Mock7",
                 LastName = "Mock7",
                 PhoneNumber = "85882852",
-                TypeID = 1
+                TypeID = new Guid("617e4975-1253-4ff8-8238-7acc67db6e3a")
             };
             var okresult = _PhoneBooksController.Delete(newPhoneBook).Result as OkObjectResult;
             Assert.IsType<OkObjectResult>(okresult);
@@ -213,7 +215,7 @@ namespace CodingTaskUnitTesting
                 FirstName = "Mock7",
                 LastName = "Mock7",
                 PhoneNumber = "85882852",
-                TypeID = 1
+                TypeID = new Guid("617e4975-1253-4ff8-8238-7acc67db6e3a")
             };
             var okresult = _PhoneBooksController.Delete(newPhoneBook).Result as OkObjectResult;
             var updatedRecord = okresult.Value as PhoneBook;

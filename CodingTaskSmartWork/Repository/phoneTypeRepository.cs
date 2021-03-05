@@ -10,9 +10,9 @@ using System.Data.Entity;
 
 namespace CodingTaskSmartWork.Repository
 {
-    public class phoneTypeRepository
+    public class phoneTypeRepository 
     {
-        public PhoneType getPhoneType(int id)
+        public dynamic getPhoneType(int id)
         {
             
             try
